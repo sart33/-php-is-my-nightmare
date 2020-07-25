@@ -3,8 +3,6 @@ function start($parser, $name, $attrs) {
  
  echo "<b>$name</b><br>"; 
  
- $depth++; 
- 
  foreach ($attrs as $attr => $value) {
  echo $attr.' = '.$value.'<br>';
  }
