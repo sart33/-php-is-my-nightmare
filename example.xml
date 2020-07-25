@@ -1,0 +1,30 @@
+<producers>
+	         <producer>
+	         	<name>Dima</name>
+	         	<age>15</age>
+	         	<show> 
+	         		   <showname>A show</showname>
+	         		   <showdate>12th December 2020</showdate>
+
+	         	</show>
+	         	<show> 
+	         		   <showname>Another show</showname>
+	         		   <showdate>5th May 2021</showdate>
+
+	         	</show>
+	         	<show> 
+	         		   <showname>Another show 2</showname>
+	         		   <showdate>5th March 2021</showdate>
+
+	         	</show>
+	         </producer>
+	         <producer>
+	         	<name>Gigi</name>
+	         	<age>25</age>
+	         	<show> 
+	         		   <showname>Better show</showname>
+	         		   <showdate>21th June 2020</showdate>
+
+	         	</show>
+	         </producer>
+</producers>
