@@ -1,4 +1,4 @@
-
+<?php
 //используем XMLReader
 $reader = new XMLReader();
 
