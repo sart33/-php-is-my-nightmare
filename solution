@@ -1,0 +1,108 @@
+
+//используем XMLReader
+$reader = new XMLReader();
+
+
+
+$reader->open('http://voyts-admin.loc/xml/issa.xml'); // указываем ридеру что будем парсить этот файл
+// циклическое чтение документа
+while($reader->read()) {
+    $xml = array();
+    $countI = 0;
+    // если ридер находит элемент <offer> запускаются события
+    if($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'product') {
+
+        //  simplexml_import_dom Получает объект класса SimpleXMLElement из узла DOM
+        $xml = simplexml_load_string($reader->readOuterXml());
+        //            if ($reader->localName == 'offer') {
+
+        $countI++;
+
+        // считываем аттрибут number
+        // Дальше зная примерную структуру документа внутри узла DOM обращаемя к элементам, сохраняя ключи и значения в массив.
+
+
+
+        // v2
+
+
+        if(isset($xml->id)) $xml['id'] = $xml->id;
+        if(isset($xml->available))$xml['available'] = $xml->available;
+        if(isset($xml->group_id))$xml['group_id'] = $xml->group_id;
+        if(isset($xml->sku)) $xml['sku'] = $xml->sku;
+        if(isset($xml->id_category))            $xml['id_category'] = $xml->id_category;
+        if(isset($xml->product_name))            $xml['product_name'] = $xml->product_name;
+        if(isset($xml->product_link))            $xml['product_link'] = $xml->product_link;
+        if(isset($xml->product_collection))            $xml['product_collection'] = $xml->product_collection;
+        if(isset($xml->product_color))            $xml['product_color'] = $xml->product_color;
+        if(isset($xml->product_style))            $xml['product_style'] = $xml->product_style;
+        if (isset($xml->product_sizes)) {
+
+            $i=0;
+            foreach ($xml->product_sizes->size as $value) {
+
+                $xml['product_sizes_' . $i] =  $value;
+                $i++;
+            }
+            unset($i);
+        }
+        if(isset($xml->product_prices->uah)) $xml['uah'] = $xml->product_prices->uah;
+        if(isset($xml->product_prices->rub)) $xml['rub'] = $xml->product_prices->rub;
+        if(isset($xml->product_prices->usd)) $xml['usd'] = $xml->product_prices->usd;
+        if(isset($xml->product_prices_opt->uah)) $xml['uah_opt'] = $xml->product_prices_opt->uah;
+        if(isset($xml->product_prices_opt->rub)) $xml['rub_opt'] = $xml->product_prices_opt->rub;
+        if(isset($xml->product_prices_opt->usd)) $xml['usd_opt'] = $xml->product_prices_opt->usd;
+        if (isset($xml->product_images->image)) {
+            if(isset($xml->product_images->image[0])) $xml['main_img'] = $xml->product_images->image[0];
+
+            $u=1;
+            foreach ($xml->product_images->image as $value) {
+
+                $xml['image_' . $u] =  $value;
+                $u++;
+            }
+            unset($u);
+        }
+
+
+
+
+
+        // В результате получаем массив объектов SimpleXMLElement с теми ключами, которые МЫ ему присвоили
+
+        // Дальше массив нужно перебрать чтобы получился масиив заполненный строками а не объектами
+
+
+        $xml = $xml->attributes();
+        echo '<pre>' . print_r($xml, true) . '</pre>';
+
+        $json = json_encode( $xml );
+        $xml_array = json_decode( $json, true );
+
+        $result  =  $xml_array['@attributes'];
+        // В результаете получаем массив строк с ключасм которые мы ему присвоили
+
+        $keywords = preg_split("/[\s,]+/", $result['product_color']);
+        echo '<pre>' . print_r($keywords, true) . '</pre>';
+        $y = (count($keywords));
+
+
+    }
+    // Дальше повторяем цикл (XMLReader ищет cследующий <offer>
+    if($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'category') {
+
+
+        if(null !== ($reader->getAttribute('id')))  $result['id'] = $reader->getAttribute('id');
+        if(null !== ($reader->getAttribute('parentId')))  $result['parentId'] = $reader->getAttribute('parentId');
+        if(null !== ($reader->readString('id')))  $result['name'] = $reader->readString('id');
+
+        $result['source'] = 'issaplus';
+
+
+
+    }
+
+}
+// Закрывает ввод, который в настоящий момент анализирует объект XMLReader.
+$reader->close();
+return $this->render('import');
